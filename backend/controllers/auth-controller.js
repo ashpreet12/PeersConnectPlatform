@@ -2,6 +2,7 @@ const otpService = require('../services/otp-service');
 const hashService = require('../services/hash-service');
 const userService = require('../services/user-service');
 const tokenService = require('../services/token-service');
+const UserDto = require('../dtos/user-dto');
 
 class AuthController {
 
@@ -59,7 +60,7 @@ class AuthController {
         try{
             user = await userService.findUser({phone: phone});
             if(!user) {
-                await userService.createUser({phone:phone});
+                user = await userService.createUser({phone:phone});
             }
         }catch(err){
             console.log(err);
@@ -75,8 +76,8 @@ class AuthController {
             httpOnly : true
         });
 
-        res.json({accessToken});
-
+        const userDto = new UserDto(user)
+        res.json({accessToken,user : userDto});
      }
 }
 
