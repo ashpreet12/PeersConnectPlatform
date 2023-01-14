@@ -1,6 +1,6 @@
 const otpService = require('../services/otp-service');
 const hashService = require('../services/hash-service');
-
+const userService = require('../services/user-service');
 
 class AuthController {
 
@@ -42,7 +42,7 @@ class AuthController {
         }
 
         const [hashedOtp,expires] = hash.split('.');
-        if(Date.now() > expires) {
+        if(Date.now() > +expires) {
             res.status(400).json({message : 'OTP expired!'});
         }
         const data = `${phone}.${otp}.${expires}`;
@@ -52,6 +52,22 @@ class AuthController {
             res.status(400).json({message: 'Invalid OTP'});
         }
 
+        let user;
+        let accessToken;
+        let refreshToken;
+
+        try{
+            user = userService.findUser({phone: phone});
+            if(!user) {
+                userService.createUser({phone:phone});
+            }
+        }catch(err){
+            console.log(err);
+            res.status(500).json({message: 'Db error'});
+        }
+        
+
+        // Token
 
      }
 }
