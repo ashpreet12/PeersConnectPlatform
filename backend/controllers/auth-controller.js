@@ -26,7 +26,7 @@ class AuthController {
             await otpService.sendBySms(phone,otp);
             return res.json({
                 hash:`${hash}.${expires}`,
-                phone,
+                phone
             })
         }catch(err) {
             console.log(err);
@@ -37,7 +37,8 @@ class AuthController {
      }
 
     async verifyOtp(req,res) {
-        const {otp,hash,phone} = require.body;
+    
+        const {otp,hash,phone} = req.body;
 
         if(!otp || !hash || !phone) {
             res.status(400).json({message: 'All fields are required!'});
