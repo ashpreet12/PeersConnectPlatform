@@ -6,9 +6,16 @@ import Authenticate from "./pages/Authenticate/Authenticate";
 import Activate from "./pages/Activate/Activate";
 import Rooms from "./pages/Rooms/Rooms";
 import { useSelector } from "react-redux";
+import { useLoadingWithRefresh } from "./hooks/useLoadingWithRefresh";
+import Loader from "./components/shared/Loader/Loader";
 
 function App() {
-  return (
+  // call refresh endpoint
+  const { loading } = useLoadingWithRefresh();
+
+  return loading ? (
+    <Loader message="Loading, please wait.." />
+  ) : (
     <BrowserRouter>
       <Navigation />
       <Routes>
@@ -72,7 +79,8 @@ function SemiProtectedRoute({ children, finalDestination }) {
 
 function ProtectedRoute({ children }) {
   const { user, isAuth } = useSelector((state) => state.auth);
-  let isActivated = user.activated;
+  let isActivated = user?.activated;
+  console.log(user, isAuth, isActivated);
   return !isAuth ? (
     <Navigate to="/" />
   ) : !isActivated ? (
