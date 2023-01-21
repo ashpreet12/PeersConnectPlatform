@@ -55,24 +55,6 @@ function App() {
 function GuestRoute({ children, finalDestination }) {
   const { isAuth } = useSelector((state) => state.auth);
 
-<<<<<<< Updated upstream
-function GuestRoute({children,finalDestination}) {
-    const {isAuth} = useSelector((state) => state.auth);
-
-    return isAuth ? <Navigate to = {finalDestination} /> : children;
-}
-
-function SemiProtectedRoute({children,finalDestination}) {
-    const {user , isAuth} = useSelector((state) => state.auth);
-    let isActivated = user.activated;
-    return !isAuth ? <Navigate to = '/'/> : !isActivated ? children : <Navigate to = {finalDestination}/>
-}
-
-function ProtectedRoute({children}) {
-    const {user , isAuth} = useSelector((state) => state.auth);
-    let isActivated = user.activated;
-    return !isAuth? <Navigate to = '/'/> : !isActivated ? <Navigate to = '/activate'/> : children
-=======
   return isAuth ? <Navigate to={finalDestination} /> : children;
 }
 
@@ -98,7 +80,6 @@ function ProtectedRoute({ children }) {
   ) : (
     children
   );
->>>>>>> Stashed changes
 }
 
 export default App;
