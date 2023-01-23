@@ -27,6 +27,11 @@ const RoomCard = ({room}) => {
                     ))}
                 </div>
             </div>
+
+            <div className={styles.peopleCount}>
+                <span>{room.totalPeople}</span>
+                <img src="/images/user-icon.png" alt="user-icon" />
+            </div>
         </div>
     )
 }
