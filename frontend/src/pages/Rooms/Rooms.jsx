@@ -12,8 +12,23 @@ const Rooms = () => {
                         <input type="text" className={styles.searchInput} />
                     </div>
                 </div>
+
+                <div className={styles.right}>
+                    <button
+                        className={styles.startRoomButton}
+                    >
+                        <img
+                            src="/images/add-room-icon.png"
+                            alt="add-room"
+                        />
+                        <span>Start a room</span>
+                    </button>
+                </div>
             </div>
+
         </div>
+
+        
     </>
 );
 };
