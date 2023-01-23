@@ -39,4 +39,11 @@
     margin-right: 5px;
 }
 
+.peopleCount {
+    text-align: right;
+}
 
+.peopleCount span {
+    font-weight: bold;
+    margin-right: 5px;
+}
