@@ -1,7 +1,7 @@
 import React from 'react';
 
 const Room = () => {
-    return <div>This is our single room</div>;
+    return <div>Single room</div>;
     
 };
 export default Room;
