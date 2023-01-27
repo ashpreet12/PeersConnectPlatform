@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import styles from './AddRoomModal.module.css';
 import TextInput from '../shared/TextInput/TextInput';
 import { createRoom as create } from '../../http';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 const AddRoomModal = ({ onClose }) => {
-    const history = useHistory();
-
+   
+    const navigate = useNavigate();
     const [roomType, setRoomType] = useState('open');
     const [topic, setTopic] = useState('');
 
@@ -13,7 +13,8 @@ const AddRoomModal = ({ onClose }) => {
         try {
             if (!topic) return;
             const { data } = await create({ topic, roomType });
-            history.push(`/room/${data.id}`);
+            navigate(`/room/${data.id}`);
+           
         } catch (err) {
             console.log(err.message);
         }

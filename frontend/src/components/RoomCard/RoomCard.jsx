@@ -1,13 +1,13 @@
 import React from 'react';
 import styles from './RoomCard.module.css';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const RoomCard = ({ room }) => {
-    const history = useHistory();
+    const navigate = useNavigate();
     return (
         <div
             onClick={() => {
-                history.push(`/room/${room.id}`);
+                navigate(`/room/${room.id}`);
             }}
             className={styles.card}
         >
