@@ -80,6 +80,27 @@ io.on('connection', (socket) => {
     });
   });
 
+  //Handle ute, unmute
+  socket.on(ACTIONS.MUTE, ({roomId, userId}) => {
+    const clients = Array.from(io.sockets.adapter.rooms.get(roomId) || []);
+    clients.forEach(clientId => {
+      io.to(clientId).emit(ACTIONS.MUTE, {
+        peerId: socket.id,
+        userId,
+      });
+    })
+  });
+
+  socket.on(ACTIONS.UN_MUTE, ({roomId, userId}) => {
+    const clients = Array.from(io.sockets.adapter.rooms.get(roomId) || []);
+    clients.forEach(clientId => {
+      io.to(clientId).emit(ACTIONS.UN_MUTE, {
+        peerId: socket.id,
+        userId,
+      });
+    })
+  });
+
   // Leaving the room
 
   const leaveRoom = ({ roomId }) => {

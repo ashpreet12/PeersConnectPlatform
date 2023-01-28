@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useWebRTC } from '../../hooks/useWebRTC';
-import { useParams, useHistory } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { getRoom } from '../../http';
 
 import styles from './Room.module.css';
@@ -10,10 +10,15 @@ const Room = () => {
     const user = useSelector((state) => state.auth.user);
     const { id: roomId } = useParams();
     const [room, setRoom] = useState(null);
+    const [isMute, setMute] = useState(true);
+
+    useEffect(() =>{
+        handleMute(isMute, user.id )
+    }, [isMute]);
 
     const { clients, provideRef, handleMute } = useWebRTC(roomId, user);
 
-    const history = useHistory();
+    const history = useNavigate();
 
     const [isMuted, setMuted] = useState(true);
 
@@ -31,7 +36,7 @@ const Room = () => {
     }, [isMuted]);
 
     const handManualLeave = () => {
-        history.push('/rooms');
+        history('/rooms');
     };
 
     const handleMuteClick = (clientId) => {
@@ -73,7 +78,7 @@ const Room = () => {
                                     <img
                                         className={styles.userAvatar}
                                         src={client.avatar}
-                                        alt=""
+                                        alt="avatar"
                                     />
                                     <audio
                                         autoPlay
