@@ -12,8 +12,17 @@ const Room = () => {
     const [room, setRoom] = useState(null);
     const [isMute, setMute] = useState(true);
 
-    useEffect(() =>{
-        handleMute(isMute, user.id )
+    function imageAddress(addr) {
+        var imageAdd = "";
+        if (addr) {
+            imageAdd = addr.split('/');
+        }
+        const valReturn = imageAdd[1] + "/" + imageAdd[2];
+        return valReturn;
+    }
+
+    useEffect(() => {
+        handleMute(isMute, user.id)
     }, [isMute]);
 
     const { clients, provideRef, handleMute } = useWebRTC(roomId, user);
@@ -46,6 +55,8 @@ const Room = () => {
         setMuted((prev) => !prev);
     };
 
+    // console.log(clients[0].avatar)
+
     return (
         <div>
             <div className="container">
@@ -77,7 +88,7 @@ const Room = () => {
                                 <div className={styles.userHead}>
                                     <img
                                         className={styles.userAvatar}
-                                        src={client.avatar}
+                                        src={require("../../" + imageAddress(client.avatar))}
                                         alt="avatar"
                                     />
                                     <audio

@@ -24,7 +24,7 @@ const StepPhoneEmail = ({ onNext }) => {
                             }`}
                             onClick={ () => setType('phone')} 
                         >
-                            <img  src='images/phoneLogo.png' alt='phone logo' width ='20px'/>
+                            <img  src='images/phone-white.png' alt='phone logo' width ='20px'/>
                         </button>
                         <button 
                             className = {`${styles.tabButton} ${
@@ -32,7 +32,7 @@ const StepPhoneEmail = ({ onNext }) => {
                             }`}
                             onClick={ () => setType('email')} 
                         >
-                            <img  src='images/emailLogo.png' alt='email logo' width ='20px'/>
+                            <img  src='images/mail-white.png' alt='email logo' width ='20px'/>
                         </button>
                     </div>  
                     <Component onNext={onNext} />

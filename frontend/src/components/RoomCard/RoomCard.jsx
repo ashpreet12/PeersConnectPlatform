@@ -3,7 +3,16 @@ import styles from './RoomCard.module.css';
 import { useNavigate } from 'react-router-dom';
 
 const RoomCard = ({ room }) => {
+    function imageAddress(addr) {
+        var imageAdd = "";
+        if (addr) {
+            imageAdd = addr.split('/');
+        }
+        const valReturn = imageAdd[1] + "/" + imageAdd[2];
+        return valReturn;
+    }
     const navigate = useNavigate();
+ 
     return (
         <div
             onClick={() => {
@@ -21,8 +30,8 @@ const RoomCard = ({ room }) => {
                     {room.speakers.map((speaker) => (
                         <img
                             key={speaker.id}
-                            src={speaker.avatar}
-                            alt="speaker-avatar"
+                            src={require("../../"+imageAddress(speaker.avatar))}
+                            alt={imageAddress(speaker.avatar)}
                         />
                     ))}
                 </div>
