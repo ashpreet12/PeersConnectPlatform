@@ -50,7 +50,6 @@ const Navigation = () => {
         <div className={styles.navRight}>
           <h3>{user?.name}</h3>
           <Link to="/">
-            {console.log(imageAddress(user.avatar))}
             <img
               className={styles.avatar}
               src={

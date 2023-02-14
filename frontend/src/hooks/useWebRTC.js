@@ -1,8 +1,9 @@
-import { useRef , useEffect, useCallback} from 'react';
+import { useRef, useEffect, useCallback } from 'react';
 import { useStateWithCallback } from './useStateWithCallback';
 import { socketInit } from '../socket';
 import { ACTIONS } from '../actions';
 import freeice from 'freeice';
+import { io } from 'socket.io-client';
 
 export const useWebRTC = (roomId, user) => {
     const [clients, setClients] = useStateWithCallback([]);
@@ -19,10 +20,10 @@ export const useWebRTC = (roomId, user) => {
 
     const addNewClient = useCallback(
         (newClient, cb) => {
-            const lookingFor = clients.find((client) => 
+            const lookingFor = clients.find((client) =>
                 client.id === newClient.id
             );
-            if(lookingFor === undefined){
+            if (lookingFor === undefined) {
                 setClients((existingClients) => [...existingClients, newClient], cb);
             }
 
@@ -35,16 +36,16 @@ export const useWebRTC = (roomId, user) => {
             })
         }
 
-        startCapture().then(() =>{
-            addNewClient({...user, muted:true}, () => {
+        startCapture().then(() => {
+            addNewClient({ ...user, muted: true }, () => {
                 const localElement = audioElements.current[user.id];
-                if(localElement){
+                if (localElement) {
                     localElement.volume = 0;
-                    localElement.srcObject = localMediaStream.current; 
+                    localElement.srcObject = localMediaStream.current;
                 }
 
                 //socket emit join
-                socket.current.emit(ACTIONS.JOIN, {roomId, user});
+                socket.current.emit(ACTIONS.JOIN, { roomId, user });
             })
         });
 
@@ -60,7 +61,7 @@ export const useWebRTC = (roomId, user) => {
 
     useEffect(() => {
 
-        const handleNewPeer = async({peerId, createOffer, user : remoteUser }) => {
+        const handleNewPeer = async ({ peerId, createOffer, user: remoteUser }) => {
             // if already connected then give warning
             if (peerId in connections.current) {
                 return console.warn(
@@ -84,13 +85,13 @@ export const useWebRTC = (roomId, user) => {
             connections.current[peerId].ontrack = ({
                 streams: [remoteStream]
             }) => {
-                addNewClient({...remoteUser, muted:true}, () => {
-                    if ( audioElements.current[remoteUser.id]) {
+                addNewClient({ ...remoteUser, muted: true }, () => {
+                    if (audioElements.current[remoteUser.id]) {
                         audioElements.current[remoteUser.id].srcObject = remoteStream
                     } else {
                         let settled = false;
                         const interval = setInterval(() => {
-                            if ( audioElements.current[remoteUser.id]) {
+                            if (audioElements.current[remoteUser.id]) {
                                 audioElements.current[remoteUser.id].srcObject = remoteStream
                                 settled = true;
                             }
@@ -112,11 +113,11 @@ export const useWebRTC = (roomId, user) => {
 
 
             // Create Offer
-            if(createOffer) {
+            if (createOffer) {
                 const offer = await connections.current[peerId].createOffer();
 
                 await connections.current[peerId].setLocalDescription(offer);
-                
+
                 // send offer to another client
                 socket.current.emit(ACTIONS.RELAY_SDP, {
                     peerId,
@@ -131,11 +132,11 @@ export const useWebRTC = (roomId, user) => {
             socket.current.off(ACTIONS.ADD_PEER);
         };
 
-    } , []);
+    }, []);
 
     // Handle ice candidate
     useEffect(() => {
-        socket.current.on(ACTIONS.ICE_CANDIDATE, ({peerId, icecandidate}) => {
+        socket.current.on(ACTIONS.ICE_CANDIDATE, ({ peerId, icecandidate }) => {
             if (icecandidate) {
                 connections.current[peerId].addIceCandidate(icecandidate);
             }
@@ -152,14 +153,14 @@ export const useWebRTC = (roomId, user) => {
     useEffect(() => {
         const handleRemoteSdp = async ({
             peerId,
-            sessionDescription:remoteSessionDescription,
+            sessionDescription: remoteSessionDescription,
         }) => {
             connections.current[peerId].setRemoteDescription(
                 new RTCSessionDescription(remoteSessionDescription)
             )
 
             // if session description is type of offer then create an answer
-            
+
             if (remoteSessionDescription.type === 'offer') {
                 const connection = connections.current[peerId];
                 const answer = await connection.createAnswer();
@@ -183,7 +184,7 @@ export const useWebRTC = (roomId, user) => {
 
     // Handle remove peer
     useEffect(() => {
-        const handleRemovePeer = async({peerId,userId}) => {
+        const handleRemovePeer = async ({ peerId, userId }) => {
             if (connections.current[peerId]) {
                 connections.current[peerId].close();
             }
@@ -207,11 +208,11 @@ export const useWebRTC = (roomId, user) => {
 
     //Listen for Mute, Unmute
     useEffect(() => {
-        socket.current.on(ACTIONS.MUTE, ({peerId, userId}) => {
+        socket.current.on(ACTIONS.MUTE, ({ peerId, userId }) => {
             setMute(true, userId)
         })
 
-        socket.current.on(ACTIONS.UN_MUTE, ({peerId, userId}) => {
+        socket.current.on(ACTIONS.UN_MUTE, ({ peerId, userId }) => {
             setMute(false, userId)
         })
 
@@ -222,8 +223,8 @@ export const useWebRTC = (roomId, user) => {
             const connectedClients = JSON.parse(
                 JSON.stringify(clientsRef.current)
             );
-            
-            if(clientIdx > -1){
+
+            if (clientIdx > -1) {
                 connectedClients[clientIdx].muted = mute;
                 setClients(connectedClients);
             }
@@ -235,32 +236,31 @@ export const useWebRTC = (roomId, user) => {
         audioElements.current[userId] = instance;
     }
     //Handle Mute
-    const handleMute = (isMute, userId) =>{
-        // console.log("mute", isMute)
+    const handleMute = (isMute, userId) => {
         let settled = false;
         let interval = setInterval(() => {
-            if(localMediaStream.current){
+            if (localMediaStream.current) {
                 localMediaStream.current.getTracks()[0].enabled = !isMute;
-                if(isMute){
+                if (isMute) {
                     socket.current.emit(ACTIONS.MUTE, {
-                        roomId, 
+                        roomId,
                         userId,
                     });
                 } else {
-                    socket.emit(ACTIONS.UN_MUTE, {
-                        roomId, 
+                    socket.current.emit(ACTIONS.UN_MUTE, {
+                        roomId,
                         userId,
                     })
                 }
                 settled = true;
             }
 
-            if(settled){
+            if (settled) {
                 clearInterval(interval);
             }
         }, 200);
-        
+
     }
 
-    return {clients, provideRef, handleMute}
+    return { clients, provideRef, handleMute }
 }
