@@ -14,6 +14,6 @@ It aims to provide support for separate voice rooms containing some mentors & me
     2. Websocket
 
 ## Screenshots of Peers Connect Platform
-![Main page of the webapp](/images/readme/image.png)*Landing page*
+![Main page of the webapp](/images/WhatsApp_Image_2023-02-15_at_00.37.36.jpeg)*Landing page*
 
-![Main page of the webapp](/images/readme/image.png)*Audio rooms*
+![Main page of the webapp](/images/WhatsApp_Image_2023-02-15_at_00.39.11.jpeg)*Audio rooms*
